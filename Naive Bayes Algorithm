@@ -6,7 +6,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import classification_report, accuracy_score
 
 # Load the dataset
-file_path = 'path_to_your_file/brown-selected.tab'
+file_path = 'brown-selected.tab'
 df = pd.read_csv(file_path, sep='\t')
 
 # Drop the first two rows (irrelevant metadata)
