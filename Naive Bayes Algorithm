@@ -1,52 +1,23 @@
-import pandas as pd
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.impute import SimpleImputer
-from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import accuracy_score, classification_report
 
-# Load the dataset
-file_path = 'brown-selected.tab'
-df = pd.read_csv(file_path, sep='\t')
+# Assume the class labels are stored in a separate array 'y'
+X = dataset[:, :-1]  # features (gene expression levels)
+y = dataset[:, -1]  # class labels
 
-# Drop the first two rows (irrelevant metadata)
-df = df.drop([0, 1])
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Identify target variable
-target = 'function'
-features = df.drop(columns=[target, 'gene'])
+# Create and train the MNB model
+mnb = MultinomialNB()
+mnb.fit(X_train, y_train)
 
-# Handle missing values
-imputer = SimpleImputer(strategy='most_frequent')
-features_imputed = imputer.fit_transform(features)
+# Make predictions on the test set
+y_pred = mnb.predict(X_test)
 
-# Encode categorical variables
-label_encoders = {}
-for column in features.columns:
-    if features[column].dtype == object:
-        le = LabelEncoder()
-        features_imputed[:, features.columns.get_loc(column)] = le.fit_transform(features[column].astype(str))
-        label_encoders[column] = le
-
-# Encode target variable
-le_target = LabelEncoder()
-target_encoded = le_target.fit_transform(df[target].astype(str))
-
-# Normalize features
-scaler = StandardScaler()
-features_scaled = scaler.fit_transform(features_imputed)
-
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(features_scaled, target_encoded, test_size=0.3, random_state=42)
-
-# Train Naive Bayes model
-nb = GaussianNB()
-nb.fit(X_train, y_train)
-y_pred_nb = nb.predict(X_test)
-
-# Evaluate model
-nb_report = classification_report(y_test, y_pred_nb, target_names=le_target.classes_)
-nb_accuracy = accuracy_score(y_test, y_pred_nb)
-
-print("Naive Bayes Accuracy:", nb_accuracy)
-print("Naive Bayes Classification Report:\n", nb_report)
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+print("Classification Report:")
+print(classification_report(y_test, y_pred))
