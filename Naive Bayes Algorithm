@@ -1,10 +1,13 @@
+import pandas as pd
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, classification_report
 
-# Assume the class labels are stored in a separate array 'y'
-X = dataset[:, :-1]  # features (gene expression levels)
-y = dataset[:, -1]  # class labels
+# Load the dataset (assuming it's in a CSV file)
+df = pd.read_csv('gene_expression_data.csv')
+
+# Split the data into features (X) and class labels (y)
+X = df.iloc[:, :-1]  # features (gene expression levels)
+y = df.iloc[:, -1]  # class labels (not provided, so I'll use the gene identifiers as a proxy)
 
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -13,11 +16,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 mnb = MultinomialNB()
 mnb.fit(X_train, y_train)
 
-# Make predictions on the test set
+# Evaluate the model on the testing set
 y_pred = mnb.predict(X_test)
-
-# Evaluate the model
-accuracy = accuracy_score(y_test, y_pred)
-print("Accuracy:", accuracy)
-print("Classification Report:")
-print(classification_report(y_test, y_pred))
+print("Accuracy:", accuracy_score(y_test, y_pred))
