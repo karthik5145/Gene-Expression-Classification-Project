@@ -1,4 +1,7 @@
+Dataset Description:
+
 The gene expression dataset consists of various alpha and cold condition measurements over time, along with some other attributes. The last three columns seem to indicate the function, class, and gene name.
+
 
 Understanding the intricate relationship between gene expression patterns and biological phenotypes is crucial in deciphering the molecular mechanisms underlying various cellular processes. 
 In this study, we present a machine learning-based approach for predictive classification of baker's yeast gene expression data. 
